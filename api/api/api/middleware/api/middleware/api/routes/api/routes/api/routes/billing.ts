@@ -2,34 +2,14 @@ import { Router } from "express";
 import Stripe from "stripe";
 
 const router = Router();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
-router.post("/subscribe", async (req, res) => {
-  const { email, priceId } = req.body;
-
-  const customer = await stripe.customers.create({ email });
-
-  const session = await stripe.checkout.sessions.create({
-    mode: "subscription",
-    customer: customer.id,
-    line_items: [{ price: priceId, quantity: 1 }],
-    success_url: "https://yourapp.com/success",
-    cancel_url: "https://yourapp.com/cancel",
-  });
-
-  res.json({ checkoutUrl: session.url });
-});
-
-export default router;
-import { Router } from "express";
-import Stripe from "stripe";
-
-const router = Router();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2023-10-16",
 });
 
-// SUBSCRIPTIONS
+/**
+ * SUBSCRIPTION CHECKOUT
+ */
 router.post("/subscribe", async (req, res) => {
   const { email, plan } = req.body;
 
@@ -51,12 +31,18 @@ router.post("/subscribe", async (req, res) => {
     line_items: [{ price: priceMap[plan], quantity: 1 }],
     success_url: "https://yourapp.com/success",
     cancel_url: "https://yourapp.com/cancel",
+    metadata: {
+      plan,
+      type: "subscription",
+    },
   });
 
   res.json({ url: session.url });
 });
 
-// DONE-FOR-YOU SETUP (ONE-TIME)
+/**
+ * DONE-FOR-YOU SETUP (ONE-TIME)
+ */
 router.post("/dfy", async (req, res) => {
   const { email } = req.body;
 
@@ -68,9 +54,13 @@ router.post("/dfy", async (req, res) => {
     line_items: [{ price: process.env.STRIPE_PRICE_DFY, quantity: 1 }],
     success_url: "https://yourapp.com/success",
     cancel_url: "https://yourapp.com/cancel",
+    metadata: {
+      type: "dfy",
+    },
   });
 
   res.json({ url: session.url });
 });
 
 export default router;
+
