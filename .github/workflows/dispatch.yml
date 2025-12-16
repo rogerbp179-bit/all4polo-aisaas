@@ -1,0 +1,64 @@
+name: Dispatch - Build & Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Publish Docker image to GHCR (true/false)'
+        required: false
+        default: 'true'
+      create_artifact:
+        description: 'Create artifacts (zip + windows shortcut)'
+        required: false
+        default: 'true'
+
+permissions:
+  contents: read
+  packages: write
+  actions: write
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build & Publish Docker image to GHCR
+        if: ${{ inputs.publish == 'true' }}
+        env:
+          IMAGE: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:latest
+        run: |
+          echo "Building Docker image..."
+          docker build -t $IMAGE .
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker push $IMAGE
+
+      - name: Prepare artifacts (zip)
+        if: ${{ inputs.create_artifact == 'true' }}
+        run: |
+          sudo apt-get update && sudo apt-get install -y zip
+          zip -r repo-package.zip . -x ".git/*" "node_modules/*" ".github/workflows/*"
+
+      - name: Upload packaged repo artifact
+        if: ${{ inputs.create_artifact == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: repo-package
+          path: repo-package.zip
+
+      - name: Upload Windows shortcut script
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-shortcut
+          path: scripts/create-desktop-shortcut.ps1

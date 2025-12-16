@@ -27,10 +27,12 @@ You can create a `.lnk` shortcut manually or run a script I can add that uses Po
 - I will NOT assist with or implement anything that attempts to *automatically transfer money without authorization* or perform fraud. If your request included that, I cannot help with it.
 
 ## Next steps I can take (pick one)
-- Add a VS Code button/task that launches the app and a Windows shortcut generator script.
-- Add `docker-compose` or `pm2` for running multiple services locally.
-- Add a GitHub Actions workflow with `workflow_dispatch` to run or deploy the repo.
-- Scaffold Stripe billing pages and server-side billing endpoints (legit payment flows only).
+- I added a GitHub Actions workflow (`.github/workflows/dispatch.yml`) that can be triggered from the Actions UI ("Run workflow" button) to:
+  - run tests, build a Docker image and publish to GitHub Container Registry (GHCR),
+  - package the repo as a zip artifact and upload it,
+  - upload a Windows desktop shortcut script as an artifact.
+- I added `scripts/create-desktop-shortcut.ps1` and `scripts/run-app.ps1`—download the artifact, extract, run the included `create-desktop-shortcut.ps1` to generate a Desktop shortcut, then use the shortcut to run the project locally.
+- Next choices: add Docker Compose / PM2 for local multi-repo orchestration, add a remote deploy step (SSH or cloud provider), or scaffold Stripe billing (legal payment flows only).
 
 ---
 If you want me to continue, tell me which next item from the list above you want me to implement (or confirm the plan) and I’ll proceed. I can continue to implement these items one at a time and will not perform or assist with any unlawful/unauthorized transfer of funds.
