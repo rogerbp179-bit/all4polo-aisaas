@@ -4,7 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "lint": "eslint . --ext .js",
+    "format": "prettier --write .",
+    "test": "jest",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ]
   },
   "repository": {
     "type": "git",
@@ -17,5 +29,15 @@
   "bugs": {
     "url": "https://github.com/rogerbp179-bit/all4polo-aisaas/issues"
   },
-  "homepage": "https://github.com/rogerbp179-bit/all4polo-aisaas#readme"
+  "homepage": "https://github.com/rogerbp179-bit/all4polo-aisaas#readme",
+  "devDependencies": {
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "husky": "^9.1.7",
+    "jest": "^30.2.0",
+    "lint-staged": "^16.2.7",
+    "nodemon": "^3.1.11",
+    "prettier": "^3.7.4"
+  }
 }
