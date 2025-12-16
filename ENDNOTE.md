@@ -32,7 +32,17 @@ You can create a `.lnk` shortcut manually or run a script I can add that uses Po
   - package the repo as a zip artifact and upload it,
   - upload a Windows desktop shortcut script as an artifact.
 - I added `scripts/create-desktop-shortcut.ps1` and `scripts/run-app.ps1`—download the artifact, extract, run the included `create-desktop-shortcut.ps1` to generate a Desktop shortcut, then use the shortcut to run the project locally.
-- Next choices: add Docker Compose / PM2 for local multi-repo orchestration, add a remote deploy step (SSH or cloud provider), or scaffold Stripe billing (legal payment flows only).
+- I added Docker Compose (`docker-compose.yml`) and a `Dockerfile` so you can run the app and an example Redis service locally with `docker-compose up --build`.
+- I added a PM2 ecosystem file (`ecosystem.config.js`) for clustered production process management.
+- I added an Express server with Stripe integration (`src/server.js`) and a `.env.example` file describing required environment variables for Stripe keys and webhook secret. Follow Stripe docs to configure your webhook and secret.
+- I added a deploy workflow (SSH-based) to run remote deploys via GitHub Actions (see `.github/workflows/deploy.yml`). Configure the following repository Secrets before running:
+  - `SSH_HOST` — remote host/IP
+  - `SSH_USER` — remote SSH user
+  - `SSH_PRIVATE_KEY` — private key for SSH auth (no passphrase preferred for automation)
+  - `SSH_PORT` — optional port (default 22)
+  - `DEPLOY_PATH` — the remote directory containing the repo and `docker-compose.yml` to be used for deployment
+
+  The workflow builds and pushes a Docker image to GHCR and then SSHs into the remote host to pull the image and bring the compose stack up-to-date.
 
 ---
 If you want me to continue, tell me which next item from the list above you want me to implement (or confirm the plan) and I’ll proceed. I can continue to implement these items one at a time and will not perform or assist with any unlawful/unauthorized transfer of funds.
