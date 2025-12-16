@@ -4,15 +4,93 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
         {
-            "type": "node",
-            "request": "launch",
             "name": "Launch Program",
+            "program": "${workspaceFolder}/app.js",
+            "request": "launch",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${file}"
+            "type": "node"
+        },
+        {
+            "name": "Attach by Process ID",
+            "processId": "${command:PickProcess}",
+            "request": "attach",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
+        {
+            "name": "Launch Edge",
+            "request": "launch",
+            "type": "msedge",
+            "url": "http://localhost:8080",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "name": "Attach to Edge",
+            "port": 9222,
+            "request": "attach",
+            "type": "msedge",
+            "webRoot": "${workspaceFolder}"
+        },
+
+
+
+
+
+
+
+
+
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch File (current)",
+            "program": "${file}",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "skipFiles": ["<node_internals>/**"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch npm: start",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": ["run", "start"],
+            "port": 9229,
+            "console": "integratedTerminal",
+            "skipFiles": ["<node_internals>/**"]
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Attach to Process",
+            "processId": "${command:PickProcess}",
+            "skipFiles": ["<node_internals>/**"]
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Attach to Remote",
+            "address": "0.0.0.0",
+            "port": 9229,
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "/usr/src/app",
+            "skipFiles": ["<node_internals>/**"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Jest Tests",
+            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/jest",
+            "runtimeArgs": ["--runInBand"],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "skipFiles": ["<node_internals>/**"]
         }
     ]
 }
