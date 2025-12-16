@@ -1,0 +1,3 @@
+curl -X POST http://localhost:3000/billing/subscribe ^
+  -H "Content-Type: application/json" ^
+  -d "{\"email\":\"test@all4polo.com\",\"plan\":\"pro\"}"
