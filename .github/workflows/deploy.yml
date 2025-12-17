@@ -39,7 +39,7 @@ jobs:
         uses: appleboy/ssh-action@v0.1.8
         with:
           host: ${{ secrets.SSH_HOST }} # Ensure SSH_HOST is defined in your repository or organization secrets
-          username: ${{ secrets.SSH_USER }}
+          username: ${{ secrets.SSH_USER }} # Ensure SSH_USER is defined in your repository or organization secrets, or replace with a username string (e.g., "ubuntu")
           key: ${{ secrets.SSH_PRIVATE_KEY }} # Ensure SSH_PRIVATE_KEY is defined in your repository secrets
           port: ${{ secrets.SSH_PORT }}
           script: |
