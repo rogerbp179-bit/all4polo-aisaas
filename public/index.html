@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All4Polo AI SaaS - Pricing & Checkout</title>
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="/sentry.js"></script>
+  <style>
+    body { font-family: sans-serif; margin: 2em; }
+    .pricing { display: flex; gap: 2em; }
+    .plan { border: 1px solid #ccc; border-radius: 8px; padding: 1.5em; width: 250px; }
+    .plan h2 { margin-top: 0; }
+    .plan button { background: #635bff; color: #fff; border: none; padding: 0.75em 1.5em; border-radius: 4px; cursor: pointer; }
+    .plan button:disabled { background: #ccc; }
+    .success, .error { margin-top: 2em; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>All4Polo AI SaaS Pricing</h1>
+  <div class="pricing">
+    <div class="plan">
+      <h2>Basic</h2>
+      <p>$10/month</p>
+      <ul>
+        <li>1 user</li>
+        <li>Email support</li>
+      </ul>
+      <button onclick="checkout(1000)">Subscribe</button>
+    </div>
+    <div class="plan">
+      <h2>Pro</h2>
+      <p>$49/month</p>
+      <ul>
+        <li>10 users</li>
+        <li>Priority support</li>
+        <li>Advanced analytics</li>
+      </ul>
+      <button onclick="checkout(4900)">Subscribe</button>
+    </div>
+  </div>
+  <div id="result"></div>
+  <script>
+    async function checkout(price) {
+      document.getElementById('result').textContent = '';
+      try {
+        const res = await fetch('/create-checkout-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ price })
+        });
+        const data = await res.json();
+        if (data.url) {
+          window.location = data.url;
+        } else {
+          document.getElementById('result').textContent = data.error || 'Error creating session.';
+        }
+      } catch (err) {
+        Sentry.captureException(err);
+        document.getElementById('result').textContent = 'Checkout failed.';
+      }
+    }
+  </script>
+</body>
+</html>
