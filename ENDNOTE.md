@@ -45,4 +45,20 @@ You can create a `.lnk` shortcut manually or run a script I can add that uses Po
   The workflow builds and pushes a Docker image to GHCR and then SSHs into the remote host to pull the image and bring the compose stack up-to-date.
 
 ---
+
+## Stripe Checkout UI & Pricing
+- Visit `/index.html` for a sample pricing and Stripe Checkout integration (test mode, client-side only).
+- `/pricing.html` provides a static pricing page with links to subscribe.
+- `/success` and `/cancel` are the return URLs for Stripe Checkout.
+
+## Monitoring & Metrics
+- Sentry browser monitoring is included in `/sentry.js` (set your DSN in the browser or via env).
+- Prometheus metrics are available at `/metrics` (exported via prom-client, scrape with Prometheus/Grafana).
+- To enable server-side Sentry, set `SENTRY_DSN` in your `.env` and uncomment the Sentry lines in `src/server.js`.
+
+## Billing & Subscriptions
+- The `/create-checkout-session` endpoint creates a Stripe Checkout session for one-time payments (can be extended for subscriptions).
+- To enable recurring billing, update the endpoint to use `mode: 'subscription'` and provide a Stripe price ID for a recurring product.
+- See Stripe docs for full subscription and billing flows.
+
 If you want me to continue, tell me which next item from the list above you want me to implement (or confirm the plan) and I’ll proceed. I can continue to implement these items one at a time and will not perform or assist with any unlawful/unauthorized transfer of funds.
