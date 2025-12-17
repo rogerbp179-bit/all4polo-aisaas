@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const Stripe = require('stripe');
 const { add } = require('../index');
+const { metricsMiddleware, client: promClient } = require('./metrics');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -11,6 +12,18 @@ const stripe = Stripe(stripeSecret);
 
 // Parse JSON bodies and raw for webhooks
 app.use(express.json());
+
+// Serve static files (pricing, checkout UI)
+app.use(express.static(require('path').join(__dirname, '../public')));
+
+// Sentry (browser only, see public/sentry.js)
+// For server-side Sentry, add your DSN below and uncomment:
+// const Sentry = require('@sentry/node');
+// Sentry.init({ dsn: process.env.SENTRY_DSN });
+// app.use(Sentry.Handlers.requestHandler());
+
+// Prometheus metrics middleware
+app.use(metricsMiddleware);
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
@@ -48,6 +61,20 @@ app.post('/create-checkout-session', async (req, res) => {
     console.error('create-checkout-session error', err);
     res.status(500).json({ error: err.message });
   }
+});
+
+// Prometheus metrics endpoint
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', promClient.register.contentType);
+  res.end(await promClient.register.metrics());
+});
+
+// Stripe Checkout return routes
+app.get('/success', (req, res) => {
+  res.send('<h1>Payment successful!</h1><p>Thank you for your purchase.</p>');
+});
+app.get('/cancel', (req, res) => {
+  res.send('<h1>Payment canceled</h1><p>Your payment was not completed.</p>');
 });
 
 // Webhook endpoint (expects raw body) — set STRIPE_WEBHOOK_SECRET env var and configure your Stripe webhook to send events here
